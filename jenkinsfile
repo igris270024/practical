@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                checkout scm
+                echo 'Repository cloned successfully'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build -t hello-world-app .'
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                bat 'docker rm -f hello-world-app-container 2>nul || exit /b 0'
+                bat 'docker run -d --name hello-world-app-container -p 3001:3000 hello-world-app'
+            }
+        }
+    }
+}
